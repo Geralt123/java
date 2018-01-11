@@ -3,6 +3,7 @@
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class pass {
     public static void main(String[] args) throws IOException {
@@ -12,7 +13,7 @@ public class pass {
         BufferedReader in = null;
 
         try {
-            echoSocket = new Socket("localhost", 3000);
+            echoSocket = new Socket("localhost", 6666);
             out = new PrintWriter(echoSocket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(
                     echoSocket.getInputStream()));
@@ -29,74 +30,99 @@ public class pass {
                 new InputStreamReader(System.in));
         String userInput;
 
-        out.println("szymon;");
+        out.println("login");
+        in.readLine();
+        out.println("");
         int len = Integer.parseInt(in.readLine());
-        System.out.println(len);
 
 
-        ArrayList<Integer> chara = new ArrayList<Integer>();
+        ArrayList<Integer> chara = new ArrayList<Integer>(256);
+        for (int i = 0; i < 256; i++) {
+            chara.add(0);
+        }
         StringBuilder buf = new StringBuilder();
-        for (int j = 65; j<91; j++) {
+        for (int j = 65; j < 91; j++) {
             for (int i = 0; i < len; i++) {
                 buf.append((char) j);
             }
-            out.println("szymon;" + buf.toString());
-            int q =Integer.parseInt(in.readLine());
-            if (q>0){
-                chara.set(j,len-q);
+            out.println(buf.toString());
+            int q = Integer.parseInt(in.readLine());
+            if (q > 0) {
+                chara.set(j, len - q);
             }
 
-            buf.delete(0,len);
+            buf.delete(0, len);
         }
-        for (int j = 97; j<123; j++) {
+        for (int j = 97; j < 123; j++) {
             for (int i = 0; i < len; i++) {
                 buf.append((char) j);
             }
-            out.println("szymon;" + buf.toString());
-            int q =Integer.parseInt(in.readLine());
-            if (q>0){
-                chara.set(j, len-q);
+            out.println(buf.toString());
+            int q = Integer.parseInt(in.readLine());
+            if (q > 0) {
+                chara.set(j, len - q);
             }
-            buf.delete(0,len);
+            buf.delete(0, len);
         }
 
-        StringBuilder fin = new StringBuilder();
-        int leni;
-        while(fin.length()==len){
-            for (int j=65; j<91; j++){
-                int nb = chara.get(j);
-                if (nb >0){
-                    for (int i=0 ; i<fin.length()+1; i++){
-                        leni = len - fin.toString().length();
-                        fin.setCharAt(i,(char) j);
-                        out.println("szymon"+fin.toString());
-                        if (leni>=Integer.parseInt(in.readLine())){
-                            fin.deleteCharAt(i);
-                        }
+        int leni = 0;
+        int nb;
+        String a = new String();
+
+
+        for (int j = 65; j < 91; j++) {
+            nb = chara.get(j);
+            if (nb > 0) {
+                for (int i = 0; i < (buf.length()) + 1; i++) {
+                    if (nb == 0) {
+                        break;
                     }
-                }
-            }
-            for (int j=97; j<123; j++){
-                int nb = chara.get(j);
-                if (nb >0){
-                    for (int i=0 ; i<fin.length()+1; i++){
-                        leni = len - fin.toString().length();
-                        fin.setCharAt(i,(char) j);
-                        out.println("szymon"+fin.toString());
-                        if (leni>=Integer.parseInt(in.readLine())){
-                            fin.deleteCharAt(i);
-                        }
+                    leni = buf.length();
+                    buf.insert(i, (char) j);
+                    out.println(buf.toString());
+                    a = in.readLine();
+                    if (a.equals("!@#PASSWORD_CORRECT")) {
+                        System.out.println(buf.toString());
+                        out.close();
+                        in.close();
+                        stdIn.close();
+                        echoSocket.close();
+                        System.exit(0);
                     }
+                    if (leni >= len - Integer.parseInt(a)) {
+                        buf.deleteCharAt(i);
+                    } else nb--;
                 }
             }
         }
 
+        for (int j = 97; j < 123; j++) {
+            nb = chara.get(j);
+            if (nb > 0) {
+                for (int i = 0; i < (buf.length()) + 1; i++) {
+                    if (nb == 0) {
+                        break;
+                    }
+                    leni = buf.length();
+                    buf.insert(i, (char) j);
+                    out.println(buf.toString());
+                    a = in.readLine();
+                    if (a.equals("!@#PASSWORD_CORRECT")) {
+                        System.out.println(buf.toString());
+                        out.close();
+                        in.close();
+                        stdIn.close();
+                        echoSocket.close();
+                        System.exit(0);
+                    }
+                    if (leni >= len - Integer.parseInt(a)) {
+                        buf.deleteCharAt(i);
+                    } else nb--;
+                }
+            }
+        }
 
-        System.out.println(fin.toString());
-        out.close();
-        in.close();
-        stdIn.close();
-        echoSocket.close();
     }
 }
+
 
